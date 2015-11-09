@@ -88,7 +88,7 @@ int main ( int argc, char* argv[])
     fastMarching->SetInput(reader->GetOutput());
 	thresholder->SetInput(fastMarching->GetOutput());
 	gaussianFilter->SetInput(thresholder->GetOutput());
-    writer->SetInput(gaussianFilter->GetOutput());
+    writer->SetInput(sigmoid->GetOutput());
 
 	
 	//gaussian smoothing sigma
