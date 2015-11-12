@@ -3,6 +3,11 @@
 
 store the seed index in a vector
 
+in the pick part:
+\ to next;
+; to previous;
+c to cancel the last one seed;
+
 
 parameters:
 
@@ -11,14 +16,13 @@ VTK
 
 ITK
 Input parameters:
-1. name of input image, *.nii
-2. name of output image, *.nii
-3. sigma for DoG, 0.2
-4. alpha for sigmoid mapping, 1/6
-5. beta for sigmoid mapping, 20
-6. time threshold for fastMarching, 20
-7. name of seed file , <--- no need, will modify later
-8. sigma for gaussian smoothing, 2
+2. name of input image, *.nii
+3. name of output image, *.nii
+4. sigma for DoG, 0.2
+5. alpha for sigmoid mapping, 1/6
+6. beta for sigmoid mapping, 20
+7. time threshold for fastMarching, 20
+8. sigma for gaussian smoothing, 1
 
 */
 
@@ -259,10 +263,10 @@ int main( int argc, char ** argv )
 	ThresholdingFilterType::Pointer thresholder = ThresholdingFilterType::New();
 	GaussianSmoothingType::Pointer  gaussianFilter = GaussianSmoothingType::New();
 
-    reader->SetFileName(argv[1]);//parameter 1
+    reader->SetFileName(argv[2]);//parameter 1
 	reader->UpdateOutputInformation();
 	InternalImageType::Pointer image = reader->GetOutput();
-    writer->SetFileName(argv[2]);//parameter 2
+    writer->SetFileName(argv[3]);//parameter 2
 
 	//smoothing
 	smoothing->SetTimeStep(0.05);
@@ -273,14 +277,14 @@ int main( int argc, char ** argv )
 	//Dog
 	//The sigma of this Gaussian can be used to control
   	//the range of influence of the image edges
-	const double sigma = atof(argv[3]);
+	const double sigma = atof(argv[4]);
 	gradientMagnitude->SetSigma(sigma);
 
 	//sigmoid mapping
 	sigmoid->SetOutputMinimum(0.0);
 	sigmoid->SetOutputMaximum(1.0);
-	const double alpha = atof(argv[4]);
-	const double beta  = atof(argv[5]);
+	const double alpha = atof(argv[5]);
+	const double beta  = atof(argv[6]);
 	sigmoid->SetAlpha(alpha);
 	sigmoid->SetBeta(beta);
 
@@ -332,7 +336,7 @@ int main( int argc, char ** argv )
 	
 
     //time threshold for fast marching<--not time, it's time * speed
-    const InternalPixelType timeThreshold = atof (argv[6]);
+    const InternalPixelType timeThreshold = atof (argv[7]);
 
     //Set the threshold for image showing
     thresholder->SetLowerThreshold(0.0);
