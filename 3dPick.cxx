@@ -14,7 +14,7 @@ parameters:
 #include "vtkSmartPointer.h"
 #include "vtkObject.h"
 #include "vtkCommand.h"
-#include "vtkMetaImageReader.h"
+#include <vtkNIFTIImageReader.h>
 #include "vtkImageData.h"
 #include "vtkImageResliceMapper.h"
 #include "vtkImageSlice.h"
@@ -24,6 +24,7 @@ parameters:
 #include "vtkInteractorStyleImage.h"
 #include "vtkRenderWindowInteractor.h"
 #include "vtkCellPicker.h"
+#include "vtkImageProperty.h"
 
 
 typedef vtkSmartPointer< vtkCellPicker > PickerType;
@@ -111,7 +112,7 @@ int main( int argc, char ** argv )
   clearFile.open("seedIndex");
   clearFile.close();
 
-  typedef vtkSmartPointer< vtkMetaImageReader > ReaderType;
+  typedef vtkSmartPointer< vtkNIFTIImageReader > ReaderType;
   ReaderType reader = ReaderType::New();
   reader->SetFileName( in_file );
   reader->Update();
@@ -121,10 +122,22 @@ int main( int argc, char ** argv )
   mapper->SetInputConnection( reader->GetOutputPort() );
   mapper->SliceAtFocalPointOn();
   mapper->SliceFacesCameraOn();
+  
+  typedef vtkSmartPointer< vtkImageProperty > PropertyType;
+  PropertyType property = PropertyType::New();
+  property->SetColorWindow(700);
+  property->SetColorLevel(1000);
+  property->SetAmbient(0.0);
+  property->SetDiffuse(1.0);
+  property->SetOpacity(1.0);
+  property->SetInterpolationTypeToLinear(); 
+  
+  
 
   typedef vtkSmartPointer< vtkImageSlice > ActorType;  
   ActorType actor = ActorType::New();
   actor->SetMapper( mapper );
+  actor->SetProperty(property);
 
   typedef vtkSmartPointer< vtkRenderer > RenderereType;
   RenderereType renderer = RenderereType::New();
@@ -134,6 +147,7 @@ int main( int argc, char ** argv )
   typedef vtkSmartPointer< vtkRenderWindow > WindowType;
   WindowType window = WindowType::New();
   window->AddRenderer( renderer );
+  //window->SetAnaglyphColorSaturation(0.5);
 
   typedef vtkSmartPointer< AdvancingInteractorStyle > StyleType;
   StyleType style = StyleType::New();
