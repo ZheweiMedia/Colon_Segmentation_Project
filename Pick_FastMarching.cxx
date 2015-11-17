@@ -330,7 +330,6 @@ int main( int argc, char ** argv )
             SeedPosition[0] = allseed[0];
             SeedPosition[1] = allseed[1];
             SeedPosition[2] = allseed[2];
-            std::cout << SeedPosition[0] << " " << SeedPosition[1] << " " << SeedPosition[2] << std::endl;
             
             NodeType    seed;
             const double SeedValue = 0.0;
