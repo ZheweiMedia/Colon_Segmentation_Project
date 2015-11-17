@@ -36,7 +36,7 @@ Input parameters:
 #include "vtkSmartPointer.h"
 #include "vtkObject.h"
 #include "vtkCommand.h"
-#include "vtkMetaImageReader.h"
+#include <vtkNIFTIImageReader.h>
 #include "vtkImageData.h"
 #include "vtkImageResliceMapper.h"
 #include "vtkImageSlice.h"
@@ -47,6 +47,7 @@ Input parameters:
 #include "vtkRenderWindowInteractor.h"
 #include "vtkCellPicker.h"
 #include "vector"
+#include "vtkImageProperty.h"
 
 #include "itkCurvatureAnisotropicDiffusionImageFilter.h"
 #include "itkGradientMagnitudeRecursiveGaussianImageFilter.h"
@@ -177,7 +178,8 @@ int main( int argc, char ** argv )
 {
   char * in_file = argv[1];
 
-  typedef vtkSmartPointer< vtkMetaImageReader > VReaderType;
+  //typedef vtkSmartPointer< vtkMetaImageReader > VReaderType;
+  typedef vtkSmartPointer< vtkNIFTIImageReader > VReaderType;
   VReaderType Vreader = VReaderType::New();
   Vreader->SetFileName( in_file );
   Vreader->Update();
@@ -187,10 +189,20 @@ int main( int argc, char ** argv )
   mapper->SetInputConnection( Vreader->GetOutputPort() );
   mapper->SliceAtFocalPointOn();
   mapper->SliceFacesCameraOn();
+  
+  typedef vtkSmartPointer< vtkImageProperty > PropertyType;
+  PropertyType property = PropertyType::New();
+  property->SetColorWindow(700);
+  property->SetColorLevel(1000);
+  property->SetAmbient(0.0);
+  property->SetDiffuse(1.0);
+  property->SetOpacity(1.0);
+  property->SetInterpolationTypeToLinear(); 
 
   typedef vtkSmartPointer< vtkImageSlice > ActorType;  
   ActorType actor = ActorType::New();
   actor->SetMapper( mapper );
+  actor->SetProperty(property);
 
   typedef vtkSmartPointer< vtkRenderer > RenderereType;
   RenderereType renderer = RenderereType::New();
@@ -294,7 +306,7 @@ int main( int argc, char ** argv )
     fastMarching->SetInput(reader->GetOutput());
 	thresholder->SetInput(fastMarching->GetOutput());
 	gaussianFilter->SetInput(thresholder->GetOutput());
-    writer->SetInput(fastMarching->GetOutput());
+    writer->SetInput(gaussianFilter->GetOutput());
 
 	
 	//gaussian smoothing sigma
