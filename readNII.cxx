@@ -2,12 +2,12 @@
 Input parameters:
 1. name of input image
 2. name of output image
-3. sigma for DoG
-4. alpha for sigmoid mapping
-5. beta for sigmoid mapping
-6. time threshold for fastMarching
-7. name of seed file 
-8. sigma for gaussian smoothing
+3. sigma for DoG, 0.01
+4. alpha for sigmoid mapping, 1/100
+5. beta for sigmoid mapping, 13
+6. time threshold for fastMarching, 30
+7. name of seed file, seedIndex 
+8. sigma for gaussian smoothing, 2
 */
 
 
@@ -65,7 +65,7 @@ int main ( int argc, char* argv[])
 	//smoothing
 	smoothing->SetTimeStep(0.05);
 	smoothing->SetNumberOfIterations(5);
-	smoothing->SetConductanceParameter(0.5);
+	smoothing->SetConductanceParameter(0.25);
 	
 	
 	//Dog
@@ -84,7 +84,7 @@ int main ( int argc, char* argv[])
 
 	//smoothing->SetInput(reader->GetOutput());
 	//gradientMagnitude->SetInput(reader->GetOutput());
-	//sigmoid->SetInput(reader->GetOutput());
+	sigmoid->SetInput(reader->GetOutput());
     fastMarching->SetInput(reader->GetOutput());
 	thresholder->SetInput(fastMarching->GetOutput());
 	gaussianFilter->SetInput(thresholder->GetOutput());
