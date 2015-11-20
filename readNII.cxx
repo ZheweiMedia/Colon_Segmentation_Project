@@ -63,9 +63,9 @@ int main ( int argc, char* argv[])
     writer->SetFileName(argv[2]);//parameter 2
 
 	//smoothing
-	smoothing->SetTimeStep(0.05);
+	smoothing->SetTimeStep(0.025);
 	smoothing->SetNumberOfIterations(5);
-	smoothing->SetConductanceParameter(0.25);
+	smoothing->SetConductanceParameter(0.15);
 	
 	
 	//Dog
@@ -82,13 +82,13 @@ int main ( int argc, char* argv[])
 	sigmoid->SetAlpha(alpha);
 	sigmoid->SetBeta(beta);
 
-	//smoothing->SetInput(reader->GetOutput());
+	smoothing->SetInput(reader->GetOutput());
 	//gradientMagnitude->SetInput(reader->GetOutput());
-	sigmoid->SetInput(reader->GetOutput());
+	//sigmoid->SetInput(reader->GetOutput());
     fastMarching->SetInput(reader->GetOutput());
 	thresholder->SetInput(fastMarching->GetOutput());
 	gaussianFilter->SetInput(thresholder->GetOutput());
-    writer->SetInput(sigmoid->GetOutput());
+    writer->SetInput(smoothing->GetOutput());
 
 	
 	//gaussian smoothing sigma
