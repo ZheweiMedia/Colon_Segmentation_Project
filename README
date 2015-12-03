@@ -1,10 +1,15 @@
-述说美好的愿望和宏大的理想是安全的，你可以一直说下去，而实践的行为是危险的，你会被你眼前的第一块石头绊倒。
 
 //Best parameters for anisotrofic diffusion: 
 
 	smoothing->SetTimeStep(0.061);
 	smoothing->SetNumberOfIterations(15);
 	smoothing->SetConductanceParameter(3.0);
+	
+//Best parameter for sigmoid
+	sigmoid->SetAlpha(alpha); <-- 1/100
+	sigmoid->SetBeta(beta); <-- 6
+	
+//Best parameter for 
 
 //run
 ./readNII sigmoid300_2.nii colon.nii 0.01 1/100 13 25 seedIndex 2
