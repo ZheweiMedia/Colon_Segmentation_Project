@@ -11,7 +11,7 @@ Input parameters:
 */
 
 
-
+#include "itkImage.h"
 #include "itkCurvatureAnisotropicDiffusionImageFilter.h"
 #include "itkGradientMagnitudeRecursiveGaussianImageFilter.h"
 #include "itkSigmoidImageFilter.h"
@@ -22,12 +22,16 @@ Input parameters:
 #include "itkRescaleIntensityImageFilter.h"
 #include "itkSmoothingRecursiveGaussianImageFilter.h"
 
+#include "itkGradientMagnitudeImageFilter.h"
+
 int main ( int argc, char* argv[])
 {
     //define input images
     typedef     float		        InternalPixelType;
     const       unsigned int        Dimension = 3;
     typedef itk::Image<InternalPixelType, Dimension>    InternalImageType;
+    typedef InternalImageType::PointType PointType;
+    typedef InternalImageType::IndexType IndexType;
     
     //define output images
     typedef     float       OutputPixelType;
@@ -51,7 +55,7 @@ int main ( int argc, char* argv[])
     ReaderType::Pointer  			reader = ReaderType::New();
     WriterType::Pointer  			writer = WriterType::New();
 	SmoothingFilterType::Pointer	smoothing = SmoothingFilterType::New();
-	GradientFilterType::Pointer		gradientMagnitude = GradientFilterType::New();
+	GradientFilterType::Pointer		gradientMagnitude = GradientFilterType::New();	
 	SigmoidFilterType::Pointer	sigmoid = SigmoidFilterType::New();
     FastMarchingFilterType::Pointer   fastMarching = FastMarchingFilterType::New();
 	ThresholdingFilterType::Pointer thresholder = ThresholdingFilterType::New();
@@ -84,11 +88,11 @@ int main ( int argc, char* argv[])
 
 	//smoothing->SetInput(reader->GetOutput());
 	//gradientMagnitude->SetInput(reader->GetOutput());
-	//sigmoid->SetInput(reader->GetOutput());
-    fastMarching->SetInput(reader->GetOutput());
+	sigmoid->SetInput(reader->GetOutput());
+    fastMarching->SetInput(sigmoid->GetOutput());
 	thresholder->SetInput(fastMarching->GetOutput());
 	gaussianFilter->SetInput(thresholder->GetOutput());
-    writer->SetInput(gaussianFilter->GetOutput());
+    writer->SetInput(thresholder->GetOutput());
 
 	
 	//gaussian smoothing sigma
@@ -105,11 +109,14 @@ int main ( int argc, char* argv[])
 	{
 		InternalImageType::IndexType SeedPosition;
 		ifs >> SeedPosition[0] >> SeedPosition[1] >> SeedPosition[2];
+		SeedPosition[2] = 160-SeedPosition[2];
 		if (ifs.good())
 			{
 				NodeType	seed;
+				InternalImageType::IndexType SeedIndex;
 				const double seedValue = 0.0;
-	
+	            //image->TransformPhysicalPointToIndex( SeedPosition, SeedIndex );
+	            //std::cout << SeedPosition[0] << " " << SeedPosition[1] << " " << SeedPosition[2] << std::endl;
 				seed.SetValue(seedValue);
 				seed.SetIndex(SeedPosition);
 				node->InsertElement(id,seed);
@@ -132,7 +139,7 @@ int main ( int argc, char* argv[])
 
     //Mapping the threshold to the output image
     thresholder->SetOutsideValue(0);
-    thresholder->SetInsideValue(255);
+    thresholder->SetInsideValue(1);
 
 	
 
