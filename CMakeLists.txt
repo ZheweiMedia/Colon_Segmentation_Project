@@ -68,3 +68,31 @@ TARGET_LINK_LIBRARIES(GVF
 ADD_EXECUTABLE(3dPick 3dPick.cxx)
 TARGET_LINK_LIBRARIES(3dPick
     ${VTK_LIBRARIES})
+    
+ADD_EXECUTABLE(3dPick_inVector 3dPick_inVector.cxx)
+TARGET_LINK_LIBRARIES(3dPick_inVector
+    ${VTK_LIBRARIES})
+    
+ADD_EXECUTABLE(Pick_FastMarching Pick_FastMarching.cxx)
+TARGET_LINK_LIBRARIES(Pick_FastMarching
+    ${VTK_LIBRARIES} ${ITK_LIBRARIES})
+    
+ADD_EXECUTABLE(Modify_Nii Modify_Nii.cxx)
+TARGET_LINK_LIBRARIES(Modify_Nii
+    ${ITK_LIBRARIES})
+    
+ADD_EXECUTABLE(PostProcess postProcess.cxx)
+TARGET_LINK_LIBRARIES(PostProcess
+    ${ITK_LIBRARIES})
+    
+ADD_EXECUTABLE(dilate dilate.cxx)
+TARGET_LINK_LIBRARIES(dilate
+    ${ITK_LIBRARIES})
+    
+ADD_EXECUTABLE(erosion erosion.cxx)
+TARGET_LINK_LIBRARIES(erosion
+    ${ITK_LIBRARIES})
+    
+ADD_EXECUTABLE(connectedThreshold connectedThreshold.cxx)
+TARGET_LINK_LIBRARIES(connectedThreshold
+    ${ITK_LIBRARIES})
